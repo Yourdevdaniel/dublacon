@@ -1,0 +1,246 @@
+.navbar {
+  background: var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 24px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent-ink);
+  letter-spacing: -0.02em;
+  margin-right: 16px;
+}
+
+.brand:hover {
+  color: var(--accent-ink);
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navbar a {
+  color: oklch(99% 0.005 40 / 0.85);
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.navbar a.brand {
+  padding: 4px 8px 4px 0;
+}
+
+.navbar a:hover {
+  color: var(--accent-ink);
+  background: oklch(99% 0.005 40 / 0.12);
+}
+
+.navbar a.brand:hover {
+  background: transparent;
+}
+
+.navbar a.active:not(.brand) {
+  color: var(--accent);
+  background: var(--accent-ink);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.navbar .icon-link {
+  display: inline-flex;
+  padding: 9px;
+  position: relative;
+}
+
+.unread-badge {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background: var(--accent-ink);
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.tab-icon {
+  position: relative;
+  display: inline-flex;
+}
+
+.tab-icon .unread-badge {
+  top: -4px;
+  right: -10px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.navbar-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(99% 0.005 40 / 0.2);
+  color: var(--accent-ink);
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 0 !important;
+  margin: 0 6px;
+  border: 2px solid oklch(99% 0.005 40 / 0.6);
+  flex-shrink: 0;
+}
+
+.navbar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.navbar a.navbar-avatar.active {
+  border-color: var(--accent-ink);
+  background: oklch(99% 0.005 40 / 0.2);
+  color: var(--accent-ink);
+}
+
+.navbar-sair {
+  background: transparent;
+  color: var(--accent-ink);
+  border: 1px solid oklch(99% 0.005 40 / 0.5);
+  padding: 7px 14px;
+}
+
+.navbar-sair:hover {
+  background: oklch(99% 0.005 40 / 0.12);
+}
+
+.navbar a.navbar-cta {
+  color: var(--accent);
+  background: var(--accent-ink);
+  font-weight: 700;
+}
+
+.navbar a.navbar-cta:hover {
+  color: var(--accent-hover);
+  background: var(--accent-ink);
+}
+
+.site-banner {
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-banner__inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  color: var(--accent-hover);
+}
+
+.site-banner__inner p {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.9rem;
+  max-width: none;
+}
+
+.site-banner__inner button {
+  background: transparent;
+  color: var(--accent-hover);
+  padding: 4px 8px;
+  font-size: 0.9rem;
+}
+
+.site-banner__inner button:hover {
+  background: oklch(64% 0.19 39 / 0.12);
+}
+
+main {
+  padding: 28px 24px 64px;
+  text-align: left;
+  flex: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tab bar: navegação principal no mobile, escondida no desktop */
+.tabbar {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .navbar-links,
+  .navbar .icon-link:not(.icon-link--keep),
+  .navbar-sair {
+    display: none;
+  }
+
+  main {
+    padding-bottom: calc(var(--tabbar-h) + 32px);
+  }
+
+  .tabbar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-nav);
+    height: var(--tabbar-h);
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+
+  .tabbar a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tabbar a.active {
+    color: var(--accent);
+  }
+}
