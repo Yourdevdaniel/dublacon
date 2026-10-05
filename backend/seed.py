@@ -2,11 +2,14 @@
 
 Rodar: docker compose exec -T backend python manage.py shell -c "exec(open('seed.py').read())"
 Idempotente: se o seed ja foi aplicado, nao faz nada.
-Senha de todos os usuarios de exemplo: dublacon123
+Senha das contas de exemplo: DEMO_PASSWORD do ambiente (ou do backend/.env); sem ela, o seed
+gera uma e mostra no fim.
 """
 
 import io
+import os
 import random
+import secrets
 from PIL import Image, ImageDraw, ImageFont
 from django.core.files.base import ContentFile
 from django.contrib.contenttypes.models import ContentType
@@ -108,9 +111,10 @@ else:
         ("Hugo Plot", "hugo.plot@example.com", "Roteirista de comédia. Se o projeto tem piada ruim, fui eu.", ["Roteirista"]),
     ]
 
+    senha_demo = os.environ.get("DEMO_PASSWORD") or secrets.token_urlsafe(12)
     usuarios = []
     for i, (nome, email, bio, roles_nomes) in enumerate(USUARIOS):
-        u = User.objects.create_user(email, nome, gerar_cpf(), password="dublacon123", bio=bio)
+        u = User.objects.create_user(email, nome, gerar_cpf(), password=senha_demo, bio=bio)
         u.foto.save("avatar.jpg", avatar(nome, PALETAS[i % len(PALETAS)]), save=True)
         u.roles.set([papeis[r] for r in roles_nomes])
         usuarios.append(u)
@@ -262,4 +266,4 @@ else:
     print(f"Seed aplicado: {User.objects.count()} usuarios, {Project.objects.count()} projetos, "
           f"{ProjectVaga.objects.count()} vagas, {ProjectUpdate.objects.count()} posts, "
           f"{Message.objects.count()} mensagens, {Notification.objects.count()} notificacoes.")
-    print("Senha de todos: dublacon123 (ex: ana.voz@example.com)")
+    print(f"Demo password: {senha_demo} (todas as contas de exemplo, ex: ana.voz@example.com)")

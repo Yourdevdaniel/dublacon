@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from accounts.models import Role, User
+from common.testing import TEST_PASSWORD
 from .models import Application, Project, ProjectVaga
 
 
@@ -14,8 +15,8 @@ class PostagemFeedTest(TestCase):
     post com project = atualizacao que so o dono pode publicar."""
 
     def setUp(self):
-        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password="x")
-        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password="x")
+        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password=TEST_PASSWORD)
+        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password=TEST_PASSWORD)
         self.projeto = Project.objects.create(owner=self.ana, nome="Fandub", descricao="d")
         self.client = APIClient()
 
@@ -39,8 +40,8 @@ class PostagemFeedTest(TestCase):
 
 class CandidaturaDecididaTest(TestCase):
     def test_aceitar_devolve_urls_absolutas(self):
-        dono = User.objects.create_user("dono@example.com", "Dono", "00000000191", password="x")
-        ana = User.objects.create_user("ana@example.com", "Ana", "00000000272", password="x")
+        dono = User.objects.create_user("dono@example.com", "Dono", "00000000191", password=TEST_PASSWORD)
+        ana = User.objects.create_user("ana@example.com", "Ana", "00000000272", password=TEST_PASSWORD)
         User.objects.filter(pk=ana.pk).update(foto="fotos_perfil/ana.jpg")
         projeto = Project.objects.create(owner=dono, nome="Fandub", descricao="d")
         vaga = ProjectVaga.objects.create(project=projeto, role=Role.objects.first(), titulo="Voz")

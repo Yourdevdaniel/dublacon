@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
+from common.testing import TEST_PASSWORD
 from .models import BannedIP, User
 
 
@@ -11,9 +12,9 @@ from .models import BannedIP, User
 class BanimentoTest(TestCase):
     def setUp(self):
         self.admin = User.objects.create_user(
-            "admin@example.com", "Admin", "00000000191", password="x", is_staff=True
+            "admin@example.com", "Admin", "00000000191", password=TEST_PASSWORD, is_staff=True
         )
-        self.mau = User.objects.create_user("mau@example.com", "Mau Elemento", "00000000272", password="x")
+        self.mau = User.objects.create_user("mau@example.com", "Mau Elemento", "00000000272", password=TEST_PASSWORD)
         self.mau.registration_ip = "10.0.0.9"
         self.mau.save(update_fields=["registration_ip"])
         self.client = APIClient()
@@ -26,12 +27,12 @@ class BanimentoTest(TestCase):
         self.assertTrue(BannedIP.objects.filter(ip="10.0.0.9").exists())
 
         # banido some da busca de nao-admins e nao consegue logar
-        outro = User.objects.create_user("outro@example.com", "Outra Pessoa", "00000000353", password="x")
+        outro = User.objects.create_user("outro@example.com", "Outra Pessoa", "00000000353", password=TEST_PASSWORD)
         c2 = APIClient()
         c2.force_authenticate(outro)
         ids = [u["id"] for u in c2.get("/api/users/").data]
         self.assertNotIn(self.mau.id, ids)
-        login = APIClient().post("/api/auth/login/", {"username": "mau@example.com", "password": "x"})
+        login = APIClient().post("/api/auth/login/", {"username": "mau@example.com", "password": TEST_PASSWORD})
         self.assertEqual(login.status_code, 400)
 
         # desbanir reativa
@@ -68,7 +69,7 @@ class BanimentoTest(TestCase):
     def test_ip_banido_nao_cadastra(self):
         BannedIP.objects.create(ip="127.0.0.1")  # IP do test client
         resp = APIClient().post("/api/auth/register/", {
-            "email": "novo@example.com", "nome": "Novo", "cpf": "00000000434", "password": "SenhaForte123!",
+            "email": "novo@example.com", "nome": "Novo", "cpf": "00000000434", "password": TEST_PASSWORD,
         })
         self.assertEqual(resp.status_code, 403)
 
@@ -80,8 +81,8 @@ class UrlDeMidiaTest(TestCase):
     FOTO = "http://testserver/media/fotos_perfil/ana.jpg"
 
     def setUp(self):
-        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password="x")
-        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password="x")
+        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password=TEST_PASSWORD)
+        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password=TEST_PASSWORD)
         self.ana.foto = "fotos_perfil/ana.jpg"  # so o caminho; o serializer nao abre o arquivo
         self.ana.save(update_fields=["foto"])
         self.client = APIClient()

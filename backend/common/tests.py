@@ -9,6 +9,7 @@ from PIL import Image
 from rest_framework.test import APIClient
 
 from accounts.models import Role, User
+from common.testing import TEST_PASSWORD
 from community.models import Report
 from projects.models import Project, ProjectVaga
 
@@ -44,8 +45,8 @@ class UploadTest(TestCase):
         override.enable()
         self.addCleanup(override.disable)
 
-        self.dono = User.objects.create_user("dono@example.com", "Dono", "00000000191", password="x")
-        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000272", password="x")
+        self.dono = User.objects.create_user("dono@example.com", "Dono", "00000000191", password=TEST_PASSWORD)
+        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000272", password=TEST_PASSWORD)
         projeto = Project.objects.create(owner=self.dono, nome="Fandub", descricao="d")
         self.vaga = ProjectVaga.objects.create(project=projeto, role=Role.objects.first(), titulo="Voz")
         self.client = APIClient()

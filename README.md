@@ -34,6 +34,7 @@ Product and design notes, in Portuguese, are in [`docs/PRODUCT.md`](docs/PRODUCT
 Requirements: Docker with Compose.
 
 ```bash
+cp .env.example .env                    # then set DB_PASSWORD
 cp backend/.env.example backend/.env
 
 # Generate the two keys and paste them into backend/.env (SECRET_KEY and FIELD_ENCRYPTION_KEY)
@@ -50,7 +51,7 @@ Optional demo data (8 users, 6 projects, 11 role openings, posts, comments, mess
 docker compose exec -T backend python manage.py shell -c "exec(open('seed.py').read())"
 ```
 
-All demo accounts use the password `dublacon123`, for example `ana.voz@example.com`.
+All demo accounts (for example `ana.voz@example.com`) share one password, printed at the end of the seed as `Demo password: ...`. It is `DEMO_PASSWORD` from `backend/.env` when set; otherwise the seed generates a random one, which is shown only that time.
 
 To use the admin tools, create a superuser. It asks for an email, a name and a valid CPF; a generated test number such as `00000000191` works. The moderation and announcements pages are linked from the Settings page ("Configurações").
 
@@ -64,7 +65,7 @@ docker compose exec backend python manage.py createsuperuser
 | API | http://localhost:8010/api/ |
 | Django admin | http://localhost:8010/admin/ |
 | SonarQube | http://localhost:9010 |
-| Postgres | `localhost:5442` (database, user and password: `dublacon`) |
+| Postgres | `localhost:5442` (database and user: `dublacon`, password: `DB_PASSWORD` from `.env`) |
 
 The ports are not the defaults so the stack can run next to other local projects. In development, password reset emails are printed to the backend logs (`docker compose logs backend`).
 

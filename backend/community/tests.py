@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from accounts.models import User
+from common.testing import TEST_PASSWORD
 from projects.models import ProjectUpdate
 from .models import Notification
 
@@ -12,8 +13,8 @@ from .models import Notification
 
 class FollowTest(TestCase):
     def setUp(self):
-        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password="x")
-        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password="x")
+        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password=TEST_PASSWORD)
+        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password=TEST_PASSWORD)
         self.client = APIClient()
         self.client.force_authenticate(self.ana)
 
@@ -38,7 +39,7 @@ class FollowTest(TestCase):
         self.assertEqual(notif.target.follower, self.ana)
 
     def test_feed_seguindo_filtra_por_quem_sigo(self):
-        carla = User.objects.create_user("carla@example.com", "Carla", "00000000353", password="x")
+        carla = User.objects.create_user("carla@example.com", "Carla", "00000000353", password=TEST_PASSWORD)
         ProjectUpdate.objects.create(author=self.beto, conteudo="post do beto")
         ProjectUpdate.objects.create(author=carla, conteudo="post da carla")
         self.client.post(f"/api/users/{self.beto.id}/seguir/")
