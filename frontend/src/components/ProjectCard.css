@@ -1,6 +1,8 @@
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  /* auto-fill (nao auto-fit) mantem as trilhas vazias: com um projeto so, o card
+     fica do tamanho de uma coluna em vez de esticar ate a largura toda */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
   margin-top: 16px;
 }
