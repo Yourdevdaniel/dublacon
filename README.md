@@ -76,7 +76,7 @@ docker compose exec frontend npm run lint
 docker compose exec frontend npm run build
 ```
 
-The backend has 17 API tests covering bans and IP blocking, the verification flow, follows and their notifications, feed permissions and upload validation. The frontend has no automated tests yet; lint and build are the checks.
+The backend has 20 API tests covering bans and IP blocking, the verification flow, follows and their notifications, feed permissions, upload validation and absolute media URLs (the frontend and the API run on different origins). The frontend has no automated tests yet; lint and build are the checks.
 
 ## Screenshots
 

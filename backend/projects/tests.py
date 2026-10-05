@@ -1,8 +1,8 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from accounts.models import User
-from .models import Project
+from accounts.models import Role, User
+from .models import Application, Project, ProjectVaga
 
 
 # CPFs de teste sinteticos (000.000.00N + digitos verificadores): validos no
@@ -35,3 +35,20 @@ class PostagemFeedTest(TestCase):
         resp = self.client.post("/api/updates/", {"conteudo": "novo ep!", "project": self.projeto.id})
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.data["project_nome"], "Fandub")
+
+
+class CandidaturaDecididaTest(TestCase):
+    def test_aceitar_devolve_urls_absolutas(self):
+        dono = User.objects.create_user("dono@example.com", "Dono", "00000000191", password="x")
+        ana = User.objects.create_user("ana@example.com", "Ana", "00000000272", password="x")
+        User.objects.filter(pk=ana.pk).update(foto="fotos_perfil/ana.jpg")
+        projeto = Project.objects.create(owner=dono, nome="Fandub", descricao="d")
+        vaga = ProjectVaga.objects.create(project=projeto, role=Role.objects.first(), titulo="Voz")
+        candidatura = Application.objects.create(vaga=vaga, applicant=ana, audio="testes_voz/ana.wav")
+
+        client = APIClient()
+        client.force_authenticate(dono)
+        resp = client.post(f"/api/candidaturas/{candidatura.id}/aceitar/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data["applicant"]["foto"], "http://testserver/media/fotos_perfil/ana.jpg")
+        self.assertEqual(resp.data["audio"], "http://testserver/media/testes_voz/ana.wav")

@@ -121,7 +121,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         notification = self.get_object()
         notification.read = True
         notification.save(update_fields=["read"])
-        return Response(NotificationSerializer(notification).data)
+        return Response(self.get_serializer(notification).data)
 
     @action(detail=False, methods=["get"])
     def nao_lidas(self, request):

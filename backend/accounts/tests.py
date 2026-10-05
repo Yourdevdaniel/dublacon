@@ -71,3 +71,31 @@ class BanimentoTest(TestCase):
             "email": "novo@example.com", "nome": "Novo", "cpf": "00000000434", "password": "SenhaForte123!",
         })
         self.assertEqual(resp.status_code, 403)
+
+
+class UrlDeMidiaTest(TestCase):
+    """Frontend e API rodam em origens diferentes (5190 e 8010 no compose), entao
+    foto/capa/arquivo precisam sair como URL absoluta, nao como /media/..."""
+
+    FOTO = "http://testserver/media/fotos_perfil/ana.jpg"
+
+    def setUp(self):
+        self.ana = User.objects.create_user("ana@example.com", "Ana", "00000000191", password="x")
+        self.beto = User.objects.create_user("beto@example.com", "Beto", "00000000272", password="x")
+        self.ana.foto = "fotos_perfil/ana.jpg"  # so o caminho; o serializer nao abre o arquivo
+        self.ana.save(update_fields=["foto"])
+        self.client = APIClient()
+        self.client.force_authenticate(self.ana)
+
+    def test_me_devolve_foto_absoluta(self):
+        self.assertEqual(self.client.get("/api/auth/me/").data["foto"], self.FOTO)
+        resp = self.client.patch("/api/auth/me/", {"bio": "dubladora"}, format="json")
+        self.assertEqual(resp.data["foto"], self.FOTO)
+
+    def test_listas_de_seguidores_devolvem_foto_absoluta(self):
+        self.client.post(f"/api/users/{self.beto.id}/seguir/")
+        seguidores = self.client.get(f"/api/users/{self.beto.id}/seguidores/").data
+        seguindo = self.client.get(f"/api/users/{self.ana.id}/seguindo/").data
+        self.assertEqual(seguidores[0]["foto"], self.FOTO)
+        self.assertEqual(seguindo[0]["id"], self.beto.id)
+        self.assertIsNone(seguindo[0]["foto"])

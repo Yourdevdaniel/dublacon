@@ -107,10 +107,10 @@ class PasswordResetConfirmView(APIView):
 
 class MeView(APIView):
     def get(self, request):
-        return Response(MeSerializer(request.user).data)
+        return Response(MeSerializer(request.user, context={"request": request}).data)
 
     def patch(self, request):
-        serializer = MeSerializer(request.user, data=request.data, partial=True)
+        serializer = MeSerializer(request.user, data=request.data, partial=True, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -163,12 +163,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=["get"])
     def seguidores(self, request, pk=None):
         users = User.objects.filter(seguindo__followed=self.get_object())
-        return Response(UserMiniSerializer(users, many=True).data)
+        return Response(UserMiniSerializer(users, many=True, context=self.get_serializer_context()).data)
 
     @action(detail=True, methods=["get"])
     def seguindo(self, request, pk=None):
         users = User.objects.filter(seguidores__follower=self.get_object())
-        return Response(UserMiniSerializer(users, many=True).data)
+        return Response(UserMiniSerializer(users, many=True, context=self.get_serializer_context()).data)
 
 
 class VerificationRequestViewSet(viewsets.ModelViewSet):

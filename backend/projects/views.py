@@ -123,7 +123,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         application.status = novo_status
         application.save(update_fields=["status"])
         notify(application.applicant, verb, target=application)
-        return Response(ApplicationSerializer(application).data)
+        return Response(self.get_serializer(application).data)
 
     @action(detail=True, methods=["post"])
     def aceitar(self, request, pk=None):
